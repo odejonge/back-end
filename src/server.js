@@ -14,6 +14,11 @@ async function start() {
   app.use(express.json());
   app.use('/images', express.static(path.join(__dirname, "/assets")));
 
+  app.use(express.static( 
+    path.resolve(__dirname, '../dist'),
+    { maxAge: '1y', etag: false  },
+  ))
+
   app.get('/api/products', async (req, res) => {
     const products = await db.collection('products').find({}).toArray();
     res.send(products);
@@ -68,9 +73,15 @@ async function start() {
     const populatedCart = await populateCartIds(user?.cartItems || []);
     res.json(populatedCart);
   })
+
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../dist/index.html'));
+  });
+
+  const port = process.env.PORT || 8000;
   
   app.listen (8000, () => {
-    console.log('Server is running on port 8000')
+    console.log('Server is running on port ' + port)
   });
 }
 
