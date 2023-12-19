@@ -12,8 +12,9 @@ async function start() {
 
   const app = express();
   app.use(express.json());
+
+  express.static.mime.define({'image/webp': ['webp']});
   app.use('/images', express.static(path.join(__dirname, "assets")));
-  console.log('Pad naar src/assets', path.join(__dirname, "assets"));
 
   app.use(express.static( 
     path.resolve(__dirname, '../dist'),
